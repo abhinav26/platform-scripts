@@ -21,19 +21,17 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self);
 
   def start(self, query):
-    self.send_response(200)
-    self.send_header('Content-Type', 'text/html')
-    self.end_headers()
-    print query
+    if 'browser' not in query:
+      self.wfile.write("No browser specified");
+      return 
     browser_name = query['browser'][0];
-    if query['proxy'][0]=='true':
+    if 'proxy' in query and query['proxy'][0]=='true':
       command = "sudo -S networksetup -setsecurewebproxy \"Wi-Fi\" localhost 8080"
       os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
       command = "sudo -S networksetup -setwebproxy \"Wi-Fi\" localhost 8080"
       os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
 
-    self.wfile.write("<h2>Start Request for "+browser_name+"</h2>");
-    self.wfile.close();
+    self.wfile.write("Start Request for "+browser_name);
 
     if browser_name == "firefox":
       os.system("cp -r /Users/abhinav/Library/Application\ Support/Firefox/Profiles/ ~/abhinav/server/temp/")
@@ -48,11 +46,7 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       controller = webbrowser.get(browser_name).open('http://www.google.com')
 
   def clean(self):
-    self.send_response(200)
-    self.send_header('Content-Type', 'text/html')
-    self.end_headers()
-    self.wfile.write("<h2>Cleanup Request</h2>");
-    self.wfile.close();
+    self.wfile.write("Cleanup Request");
 
     print "cleanup Firefox"
     os.system("rm -rf /Users/abhinav/Library/Application\ Support/Firefox/Profiles/cv3v4zkh.default-1377504414332/*")
@@ -69,15 +63,12 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
 
 
-
-
   def stop(self, query) :
-    self.send_response(200)
-    self.send_header('Content-Type', 'text/html')
-    self.end_headers()
+    if 'browser' not in query:
+      self.wfile.write("No browser specified");
+      return 
     browser_name = query['browser'][0];
-    self.wfile.write("<h2>Stop Request for "+browser_name+"</h2>");
-    self.wfile.close();
+    self.wfile.write("Stop Request for "+browser_name);
     print "ps ax | grep -i " + browser_name + " | grep -v grep | awk '{ print $1 }' | xargs kill -9"
     os.system("ps ax | grep -i " + browser_name + " | grep -v grep | awk '{ print $1 }' | xargs kill -9")
 
