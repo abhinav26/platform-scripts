@@ -5,6 +5,7 @@ import os
 import webbrowser
 
 PORT = 8000
+PASSWORD="unlock\n"
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
   def do_GET(self):
@@ -23,7 +24,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     self.send_response(200)
     self.send_header('Content-Type', 'text/html')
     self.end_headers()
+    print query
     browser_name = query['browser'][0];
+    if query['proxy'][0]=='true':
+      command = "sudo -S networksetup -setsecurewebproxy \"Wi-Fi\" localhost 8080"
+      os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
+      command = "sudo -S networksetup -setwebproxy \"Wi-Fi\" localhost 8080"
+      os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
+
     self.wfile.write("<h2>Start Request for "+browser_name+"</h2>");
     self.wfile.close();
 
@@ -55,6 +63,11 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     print "cleanup Chrome"
     os.system("rm -rf ~/Library/Application\ Support/Google/Chrome/Default/*")
     os.system("cp -r ~/abhinav/server/temp/Default ~/Library/Application\ Support/Google/Chrome/")
+    command ="networksetup -setsecurewebproxystate \"Wi-Fi\" off"
+    os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
+    command ="networksetup -setwebproxystate \"Wi-Fi\" off"
+    os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
+
 
 
 
@@ -65,8 +78,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     browser_name = query['browser'][0];
     self.wfile.write("<h2>Stop Request for "+browser_name+"</h2>");
     self.wfile.close();
-    print "ps ax | grep -i "+browser_name+" | grep -v grep | awk '{ print $1 }' | xargs kill -9"
-    os.system("ps ax | grep -i "+browser_name+" | grep -v grep | awk '{ print $1 }' | xargs kill -9")
+    print "ps ax | grep -i " + browser_name + " | grep -v grep | awk '{ print $1 }' | xargs kill -9"
+    os.system("ps ax | grep -i " + browser_name + " | grep -v grep | awk '{ print $1 }' | xargs kill -9")
 
 
 Handler = MyHandler
