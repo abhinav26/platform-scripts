@@ -27,9 +27,9 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
       return 
     browser_name = query['browser'][0];
     if 'proxy' in query and query['proxy'][0]=='true':
-      command = "sudo -S networksetup -setsecurewebproxy \"Wi-Fi\" localhost 8080"
+      command = "sudo -S networksetup -setsecurewebproxy \"Wi-Fi\" localhost 9000"
       os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
-      command = "sudo -S networksetup -setwebproxy \"Wi-Fi\" localhost 8080"
+      command = "sudo -S networksetup -setwebproxy \"Wi-Fi\" localhost 9000"
       os.popen("sudo -S %s"%(command), 'w').write(PASSWORD)
 
     self.wfile.write("Start Request for ["+browser_name+"]");

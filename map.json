@@ -1,0 +1,15 @@
+{
+"REDIRECT": 
+	{
+	"a.bstack.com" :
+		{ 
+			"server":"localhost" , 
+			"port":"8000" 
+		}, 
+	"b.bstack.com" :
+		{ 
+			"server":"localhost" , 
+			"port":"8002" 
+		}
+	}
+}

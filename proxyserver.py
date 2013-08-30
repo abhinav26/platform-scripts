@@ -11,12 +11,11 @@ Any help will be greatly appreciated.   SUZUKI Hisao
 __version__ = "0.2.1"
 
 import BaseHTTPServer, select, socket, SocketServer, urlparse
-import os
+import os, json
 
-REDIRECT ={
-    "a.bstack.com" : "localhost:8000",
-    "b.bstack.com" : "localhost:8002"
-}
+
+with open('map.json', 'r') as json_file: #for tha mapping
+    mapdata = json.load(json_file)
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -68,9 +67,14 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if scm != 'http' or fragment or not netloc:
             self.send_error(400, "bad url %s" % self.path)
             return
-        if netloc in REDIRECT.keys():
-            netloc = REDIRECT[netloc]
-            print "bstack"
+
+        try:
+            value = mapdata["REDIRECT"][netloc]
+            netloc = value["server"]+":"+value["port"]
+            print "bstack " +netloc
+        except KeyError:
+            pass
+            
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(netloc, soc):
