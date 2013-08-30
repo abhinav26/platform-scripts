@@ -1,0 +1,19 @@
+Proxy runs at 9000 on my machine (use command <python proxyserver.py 9000)
+
+The Main Server runs at 8000 which is also a python(it's a daemon process as defined by the plist file)
+Accepts start, stop, cleanup requests.
+Request example: localhost:8000/start?browser=firefox&proxy=true
+								 localhost:8000/stop?browser=safari
+								 localhost:8000/cleanup
+
+cleanup.sh copies the backups made in start request to their appropriate places so that any new changes are discarded. 
+
+com.runserver.8000.plist : The plist file to make the server a daemon process.
+													Place the file in /Library/LaunchDaemons/
+													to run use: launchctl load -w /Library/LaunchDaemons/run.server.8000
+
+The json file makes a mapping. If two instances of servers are running(at 8000, 8002) and proxy is also running:
+	a.bstact.com maps to localhost:8000
+	b.bstact.com maps to localhost:8002
+to make a ssh tunnel for safe connection use command: ssh -N -L 9000:127.0.0.1:8000 abhinav@127.0.0.1 
+
