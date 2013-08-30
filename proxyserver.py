@@ -11,6 +11,12 @@ Any help will be greatly appreciated.   SUZUKI Hisao
 __version__ = "0.2.1"
 
 import BaseHTTPServer, select, socket, SocketServer, urlparse
+import os
+
+REDIRECT ={
+    "a.bstack.com" : "localhost:8000",
+    "b.bstack.com" : "localhost:8002"
+}
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -49,7 +55,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.log_request(200)
                 self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-                self.wfile.write("\r\n")
+                self.wfile.write("\r\n")    
                 self._read_write(soc, 300)
         finally:
             print "\t" "bye"
@@ -62,9 +68,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if scm != 'http' or fragment or not netloc:
             self.send_error(400, "bad url %s" % self.path)
             return
-        if netloc == "localhost:8000" and ("proxy=true" not in query):
-          print "no proxy"
-          #return
+        if netloc in REDIRECT.keys():
+            netloc = REDIRECT[netloc]
+            print "bstack"
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(netloc, soc):

@@ -2,17 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-		<key>KeepAlive</key>
+    <key>RunAtLoad</key>
+    <true/>
+	<key>KeepAlive</key>
     <true/>
     <key>Label</key>
     <string>com.runserver.8000</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/abhinav/abhinav/server</string>
     <key>ProgramArguments</key>
     <array>
-    		<string>/usr/bin/python</string>
+    	<string>/usr/bin/python</string>
         <string>/Users/abhinav/abhinav/server/server.py</string>
         <string>&amp;</string>
     </array>
-    <key>RunAtLoad</key>
-    <true/>
 </dict>
 </plist>
